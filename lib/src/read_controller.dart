@@ -107,6 +107,7 @@ class ReadStyle {
   final double sentenceSpacing;
   final double lineSpacing;
   final double wordSpacing;
+  final EdgeInsets titlePadding;
   final EdgeInsets padding;
   final ScrollType scrollType;
 
@@ -121,6 +122,7 @@ class ReadStyle {
     this.sentenceSpacing = 16,
     this.lineSpacing = 8,
     this.wordSpacing = 2,
+    this.titlePadding = EdgeInsets.zero,
     this.padding = const EdgeInsets.all(20),
     this.scrollType = ScrollType.cover,
   });
@@ -134,6 +136,7 @@ class ReadStyle {
     double? sentenceSpacing,
     double? lineSpacing,
     double? wordSpacing,
+    EdgeInsets? titlePadding,
     EdgeInsets? padding,
     ScrollType? scrollType,
   }) {
@@ -146,6 +149,7 @@ class ReadStyle {
         sentenceSpacing: sentenceSpacing ?? this.sentenceSpacing,
         lineSpacing: lineSpacing ?? this.lineSpacing,
         wordSpacing: wordSpacing ?? this.wordSpacing,
+        titlePadding: titlePadding ?? this.titlePadding,
         padding: padding ?? this.padding,
         scrollType: scrollType ?? this.scrollType);
   }

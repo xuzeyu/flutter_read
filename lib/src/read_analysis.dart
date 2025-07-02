@@ -93,9 +93,22 @@ Future<ui.Picture> drawTextOnCanvas(
 
   double x = readStyle.padding.left;
   double y = readStyle.padding.top;
+  bool isHaveTitle = false;
+  for (final line in bookPage.lines) {
+    if (line.isTitle) {
+      y += readStyle.titlePadding.top;
+      isHaveTitle = true;
+      break;
+    }
+  }
   double wordSpacing = readStyle.wordSpacing;
   double firstLineWordSpacing = wordSpacing;
+  bool isFirstContentLine = false;
   for (final line in bookPage.lines) {
+    if (isHaveTitle && !line.isTitle && !isFirstContentLine) {
+      y += readStyle.titlePadding.bottom;
+      isFirstContentLine = true;
+    }
     final words = line.sentence.words.sublist(line.startIndex, line.endIndex);
     double wordWidth = 0.0;
     for (final word in words) {
@@ -105,7 +118,10 @@ Future<ui.Picture> drawTextOnCanvas(
     double spacing = controller.contentSize.width -
         readStyle.padding.left -
         readStyle.padding.right -
-        wordWidth;
+        wordWidth -
+        (line.isTitle
+            ? readStyle.titlePadding.left + readStyle.titlePadding.right
+            : 0);
     if (line.endIndex != null) {
       if ((line.isTitle && readStyle.titleTextAlign == TextAlign.justify) ||
           (!line.isTitle && readStyle.textAlign == TextAlign.justify)) {
@@ -133,8 +149,14 @@ Future<ui.Picture> drawTextOnCanvas(
       x = controller.contentSize.width -
           wordWidth -
           wordSpacing * (words.length - 1) -
-          readStyle.padding.right;
+          readStyle.padding.right -
+          (line.isTitle ? readStyle.titlePadding.right : 0);
     }
+
+    if (line.isTitle) {
+      x += readStyle.titlePadding.left;
+    }
+
     for (final word in words) {
       TextPainter tp = _wordPainter(word.char,
           line.isTitle ? readStyle.titleTextStyle : readStyle.textStyle);
@@ -169,7 +191,11 @@ BookPage _getPageContentAfter(
   if (sentenceIndex >= sentences.length || sentenceIndex < 0) {
     return page;
   }
-  double height = controller.readStyle.padding.top;
+  double height = controller.readStyle.padding.top +
+      (title.isNotEmpty
+          ? controller.readStyle.titlePadding.top +
+              controller.readStyle.titlePadding.bottom
+          : 0);
   if (title.isNotEmpty) {
     List<BookWord> titleWord = List.empty(growable: true);
     for (int i = 0; i < title.length; i++) {
@@ -252,7 +278,11 @@ BookPage _getPageContentBefore(
   if (currentIndex >= sentences.length || currentIndex < 0) {
     return page;
   }
-  double height = controller.readStyle.padding.top;
+  double height = controller.readStyle.padding.top +
+      (title.isNotEmpty
+          ? controller.readStyle.titlePadding.top +
+              controller.readStyle.titlePadding.bottom
+          : 0);
   double wordHeight =
       controller.zhWordSize.height + controller.readStyle.lineSpacing;
   while (height +
@@ -450,7 +480,11 @@ List<int> _breakText(
   }
   double lineWidth = controller.contentSize.width -
       controller.readStyle.padding.left -
-      controller.readStyle.padding.right;
+      controller.readStyle.padding.right -
+      (isTitle
+          ? controller.readStyle.titlePadding.left +
+              controller.readStyle.titlePadding.right
+          : 0);
   List<int> strBreak = List.filled(2, 0);
   double width = 0;
   for (int i = 0; i < text.length; i++) {

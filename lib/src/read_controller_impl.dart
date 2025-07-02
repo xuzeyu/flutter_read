@@ -516,13 +516,17 @@ class ReadControllerImpl implements ReadController {
   }
 
   void _initWord() {
-    zhWordSize = _wordSize("龘", _readStyle.textStyle);
-    zhTitleWordSize = _wordSize("龘", _readStyle.titleTextStyle);
+    zhWordSize = _wordSize(false, "龘", _readStyle.textStyle);
+    zhTitleWordSize = _wordSize(true, "龘", _readStyle.titleTextStyle);
   }
 
-  Size _wordSize(String word, TextStyle textStyle) {
-    double contentWidth =
-        contentSize.width - _readStyle.padding.left - _readStyle.padding.right;
+  Size _wordSize(bool isTitle, String word, TextStyle textStyle) {
+    double contentWidth = contentSize.width -
+        _readStyle.padding.left -
+        _readStyle.padding.right -
+        (isTitle
+            ? _readStyle.titlePadding.left + _readStyle.titlePadding.right
+            : 0);
     TextPainter textPaint = _measureText(textStyle, word);
     int maxLineWordNum = (contentWidth + _readStyle.wordSpacing) ~/
         (textPaint.width + _readStyle.wordSpacing);
