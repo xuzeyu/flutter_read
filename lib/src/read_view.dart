@@ -224,12 +224,19 @@ class _ReadViewState extends State<ReadView> {
     }
     return Container(
       decoration: BoxDecoration(
-        color: widget.readController.readStyle.bgColor,
+        image: widget.readController.readStyle.bgImage == null
+            ? null
+            : DecorationImage(
+                image: widget.readController.readStyle.bgImage!,
+                fit: BoxFit.cover),
+        color: widget.readController.readStyle.bgImage == null
+            ? widget.readController.readStyle.bgColor
+            : null,
         boxShadow:
             widget.readController.readStyle.scrollType == ScrollType.cover
                 ? [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       spreadRadius: 0.2,
                       blurRadius: 10.0,
                     ),

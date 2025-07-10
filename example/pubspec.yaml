@@ -24,6 +24,7 @@ flutter:
   assets:
     - assets/books/
     - assets/fonts/
+    - assets/images/
 
   fonts:
     - family: 楷体

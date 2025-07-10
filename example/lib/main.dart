@@ -57,9 +57,9 @@ class _MyAppState extends State<MyApp> {
     enableVerticalDrag: true,
     enableTapPage: true,
     readStyle: ReadStyle(
-      titlePadding:
-          const EdgeInsets.only(top: 100, bottom: 100, left: 0, right: 0),
-    ),
+        titlePadding:
+            const EdgeInsets.only(top: 100, bottom: 100, left: 0, right: 0),
+        bgImage: const AssetImage("assets/images/bg.jpg")),
   );
   PersistentBottomSheetController? _menuController;
 
@@ -88,20 +88,6 @@ class _MyAppState extends State<MyApp> {
     int state = await bookController.startReadBook(source);
     Duration duration = DateTime.now().difference(now);
     debugPrint("wwww,loading time, $duration, $state");
-
-    // ChapterData chapterData = ChapterData(wordIndex: 0, chapterIndex: 1);
-    // BookSource bookSource = StringSource(
-    //     "1The circumstances of the general election of 18 — will be well remembered by all those who take an interest in the political matters of the country. There had been a coming in and a going out of ministers previous to that — somewhat rapid, very exciting, and, upon the whole, useful as showing the real feeling of the country upon sundry questions of public interest. Mr Gresham had been Prime Minister of England, as representative of the Liberal party in politics. There had come to be a split among those who should have been his followers on the terribly vexed question of the Ballot. Then Mr Daubeny for twelve months had sat upon the throne distributing the good things of the Crown amidst Conservative birdlings, with beaks wide open and craving maws, who certainly for some years previous had not received their share of State honours or State emoluments. And Mr Daubeny was still so sitting, to the infinite dismay of the Liberals, every man of whom felt that his party was entitled by numerical strength to keep the management of the Government within its own hands.",
-    //     "Chapter 1 TemptationTemptationTemptationTemptationTemptation",
-    //     isSplit: true);
-    // await bookController.addChapter(bookSource, 0);
-    // BookSource bookSource2 = StringSource(
-    //     "2The circumstances of the general election of 18 — will be well remembered by all those who take an interest in the political matters of the country. There had been a coming in and a going out of ministers previous to that — somewhat rapid, very exciting, and, upon the whole, useful as showing the real feeling of the country upon sundry questions of public interest. Mr Gresham had been Prime Minister of England, as representative of the Liberal party in politics. There had come to be a split among those who should have been his followers on the terribly vexed question of the Ballot. Then Mr Daubeny for twelve months had sat upon the throne distributing the good things of the Crown amidst Conservative birdlings, with beaks wide open and craving maws, who certainly for some years previous had not received their share of State honours or State emoluments. And Mr Daubeny was still so sitting, to the infinite dismay of the Liberals, every man of whom felt that his party was entitled by numerical strength to keep the management of the Government within its own hands.",
-    //     "Chapter 2 Temptation",
-    //     isSplit: true);
-    // // await bookController.addChapter(bookSource2, 5);
-
-    // int state = await bookController.startReadChapter(bookSource2, chapterData);
   }
 
   @override
