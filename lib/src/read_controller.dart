@@ -103,7 +103,7 @@ class ReadStyle {
   final TextStyle titleTextStyle;
   final TextAlign textAlign;
   final TextAlign titleTextAlign;
-  final Color bgColor;
+  final Color? bgColor;
   final ImageProvider? bgImage;
   final double sentenceSpacing;
   final double lineSpacing;
@@ -143,13 +143,17 @@ class ReadStyle {
     EdgeInsets? padding,
     ScrollType? scrollType,
   }) {
+    if (bgColor == null && bgImage == null) {
+      bgColor = this.bgColor;
+      bgImage = this.bgImage;
+    }
     return ReadStyle(
         textStyle: textStyle ?? this.textStyle,
         titleTextStyle: titleTextStyle ?? this.titleTextStyle,
         textAlign: textAlign ?? this.textAlign,
         titleTextAlign: titleTextAlign ?? this.titleTextAlign,
-        bgColor: bgColor ?? this.bgColor,
-        bgImage: bgImage ?? this.bgImage,
+        bgColor: bgColor,
+        bgImage: bgImage,
         sentenceSpacing: sentenceSpacing ?? this.sentenceSpacing,
         lineSpacing: lineSpacing ?? this.lineSpacing,
         wordSpacing: wordSpacing ?? this.wordSpacing,
