@@ -6,37 +6,37 @@ import 'package:flutter_read/flutter_read.dart';
 
 import 'menu.dart';
 
-// // 新增的简介页面和章节结束页面
-// final Widget summaryPage = Container(
-//   padding: const EdgeInsets.all(16),
-//   child: const Column(
-//     children: [
-//       Text('书籍简介', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//       SizedBox(height: 16),
-//       Text(
-//           '这是一本演示用的书籍，用于展示flutter_read库的功能。\n\n主要内容包括设置简介页面和章节结束页面，以及章节评分和互动页面等功能。'),
-//     ],
-//   ),
-// );
+// 新增的简介页面和章节结束页面
+final Widget summaryPage = Container(
+  padding: const EdgeInsets.all(16),
+  child: const Column(
+    children: [
+      Text('书籍简介', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      SizedBox(height: 16),
+      Text(
+          '这是一本演示用的书籍，用于展示flutter_read库的功能。\n\n主要内容包括设置简介页面和章节结束页面，以及章节评分和互动页面等功能。'),
+    ],
+  ),
+);
 
-// final Widget chapterEndPage = Container(
-//   padding: const EdgeInsets.all(16),
-//   child: Column(
-//     children: [
-//       const Text('章节结束',
-//           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//       const SizedBox(height: 16),
-//       const Text('你已经读完了本章内容。\n\n现在你可以对本章进行评分，并参与讨论。'),
-//       const SizedBox(height: 16),
-//       Row(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: List.generate(5, (index) {
-//           return const Icon(Icons.star, color: Colors.amber);
-//         }),
-//       ),
-//     ],
-//   ),
-// );
+final Widget chapterEndPage = Container(
+  padding: const EdgeInsets.all(16),
+  child: Column(
+    children: [
+      const Text('章节结束',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 16),
+      const Text('你已经读完了本章内容。\n\n现在你可以对本章进行评分，并参与讨论。'),
+      const SizedBox(height: 16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(5, (index) {
+          return const Icon(Icons.star, color: Colors.amber);
+        }),
+      ),
+    ],
+  ),
+);
 
 void main() {
   runApp(const MyApp());

@@ -327,6 +327,19 @@ class _ReadViewState extends State<ReadView> {
   }
 
   void _onPageIndexChanged(int index, {bool pre = false}) {
+    // 确保索引在有效范围内
+    final totalPages = widget.readController.pageTotal();
+    final safeIndex = index.clamp(widget.readController.firstIndex,
+        widget.readController.firstIndex + totalPages - 1);
+
+    if (index != safeIndex) {
+      // 如果索引超出范围，修正到最近的有效页面
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        pageController.jumpToPage(safeIndex);
+      });
+      return;
+    }
+
     List<int> chapterIndexDiff = widget.readController.findChapterIndex(index);
     PaintData? data = widget.readController.bookPageList[chapterIndexDiff[0]]
         ?[chapterIndexDiff[1]];

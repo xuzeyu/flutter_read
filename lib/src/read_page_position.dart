@@ -273,6 +273,11 @@ class ReadPagePosition extends ScrollPositionWithSingleContext
 
   @override
   void applyUserOffset(double delta) {
+    // 增加边界检查：当滑动到边缘时阻止继续滑动
+    if ((disableLeft && delta > 0) || (disableRight && delta < 0)) {
+      return;
+    }
+
     updateUserScrollDirection(
         delta > 0.0 ? ScrollDirection.forward : ScrollDirection.reverse);
     double value = pixels - physics.applyPhysicsToUserOffset(this, delta);
@@ -299,7 +304,10 @@ class ReadPagePosition extends ScrollPositionWithSingleContext
         }
       }
     } else {
-      setPixels(value);
+      // 确保不会超出有效范围
+      final clampedValue = value.clamp(minScrollExtent, maxScrollExtent);
+      setPixels(clampedValue);
+      // setPixels(value);
     }
     if (!isBreak) {
       double diff = beginPixels - pixels;
