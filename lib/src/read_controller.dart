@@ -105,6 +105,7 @@ class ReadStyle {
   final TextAlign titleTextAlign;
   final Color? bgColor;
   final ImageProvider? bgImage;
+  final int indent; //首行缩进
   final double sentenceSpacing;
   final double lineSpacing;
   final double wordSpacing;
@@ -121,6 +122,7 @@ class ReadStyle {
     this.titleTextAlign = TextAlign.center,
     this.bgColor = const Color(0xFFF5F5DC),
     this.bgImage,
+    this.indent = 2,
     this.sentenceSpacing = 16,
     this.lineSpacing = 8,
     this.wordSpacing = 2,
@@ -136,6 +138,7 @@ class ReadStyle {
     TextAlign? titleTextAlign,
     Color? bgColor,
     ImageProvider? bgImage,
+    int? indent,
     double? sentenceSpacing,
     double? lineSpacing,
     double? wordSpacing,
@@ -154,6 +157,7 @@ class ReadStyle {
         titleTextAlign: titleTextAlign ?? this.titleTextAlign,
         bgColor: bgColor,
         bgImage: bgImage,
+        indent: indent ?? this.indent,
         sentenceSpacing: sentenceSpacing ?? this.sentenceSpacing,
         lineSpacing: lineSpacing ?? this.lineSpacing,
         wordSpacing: wordSpacing ?? this.wordSpacing,

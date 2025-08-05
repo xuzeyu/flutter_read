@@ -110,6 +110,10 @@ Future<ui.Picture> drawTextOnCanvas(
       isFirstContentLine = true;
     }
     final words = line.sentence.words.sublist(line.startIndex, line.endIndex);
+    // 增加首行缩进
+    if (!line.isTitle && line.startIndex == 0) {
+      words.insert(0, BookWord("\u3000\u3000", -1));
+    }
     double wordWidth = 0.0;
     for (final word in words) {
       wordWidth += _wordWidth(word.char,
