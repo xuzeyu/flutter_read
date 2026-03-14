@@ -70,6 +70,7 @@ class ReadControllerImpl implements ReadController {
   final Map<int, List<PaintData>> bookPageList = SplayTreeMap();
   final Map<int, BookSource> _chapterSourceList = SplayTreeMap();
   final Map<int, List<BookSentence>> chapterSentences = SplayTreeMap();
+  final Map<int, List<BookSentence>> _rawChapterSentences = SplayTreeMap();
 
   // English: Indicates if the book has been fully loaded
   // 中文: 书本加载完成
@@ -156,12 +157,14 @@ class ReadControllerImpl implements ReadController {
       return -2;
     }
     bookPageList.clear();
+    chapterSentences.clear();
+    _rawChapterSentences.clear();
     firstIndex = initialPage;
     _isLoadCompleter = false;
     int i = 0;
     for (String title in sentences.keys) {
       List<BookSentence> content = sentences[title] ?? List.empty();
-      chapterSentences[i] = content;
+      _setChapterSentences(i, content);
       addChapter(ChapterSource(content, title), i);
       i++;
     }
@@ -194,9 +197,11 @@ class ReadControllerImpl implements ReadController {
       return -2;
     }
     bookPageList.clear();
+    chapterSentences.clear();
+    _rawChapterSentences.clear();
     firstIndex = initialPage;
     _isLoadCompleter = false;
-    chapterSentences[chapterIndex] = sentences!;
+    _setChapterSentences(chapterIndex, sentences!);
     return _startRead(source, chapter);
   }
 
@@ -302,6 +307,7 @@ class ReadControllerImpl implements ReadController {
   @override
   set readStyle(ReadStyle style) {
     _readStyle = style;
+    _updateRenderSentencesForAllChapters();
     if (isAttach.value) {
       _initWord();
       refresh();
@@ -439,7 +445,7 @@ class ReadControllerImpl implements ReadController {
       if (sentences?.isEmpty ?? true) {
         return;
       }
-      chapterSentences[chapterIndex] = sentences!;
+      _setChapterSentences(chapterIndex, sentences!);
       String title = source.getTitle();
       List<PaintData> list =
           await addBookAfterData(this, title, chapterIndex, 0, 0);
@@ -469,7 +475,7 @@ class ReadControllerImpl implements ReadController {
       if (sentences?.isEmpty ?? true) {
         return;
       }
-      chapterSentences[chapterIndex] = sentences!;
+      _setChapterSentences(chapterIndex, sentences!);
       String title = source.getTitle();
       List<PaintData> list =
           await addBookAfterData(this, title, chapterIndex, 0, 0);
@@ -618,6 +624,64 @@ class ReadControllerImpl implements ReadController {
       result += bookList.length;
     }
     return result;
+  }
+
+  void _updateRenderSentencesForAllChapters() {
+    for (final entry in _rawChapterSentences.entries) {
+      chapterSentences[entry.key] = _buildRenderSentences(entry.value);
+    }
+  }
+
+  void _setChapterSentences(int chapterIndex, List<BookSentence> sentences) {
+    _rawChapterSentences[chapterIndex] = sentences;
+    chapterSentences[chapterIndex] = _buildRenderSentences(sentences);
+  }
+
+  List<BookSentence> _buildRenderSentences(List<BookSentence> source) {
+    final bool removeLeading = _readStyle.removeParagraphLeadingSpaces;
+    final bool removeTrailing = _readStyle.removeParagraphTrailingSpaces;
+    if (!removeLeading && !removeTrailing) {
+      return source;
+    }
+    final List<BookSentence> result = List.empty(growable: true);
+    for (final sentence in source) {
+      final words = sentence.words;
+      int start = 0;
+      int end = words.length;
+      if (removeLeading) {
+        while (start < end && _isParagraphSpace(words[start].char)) {
+          start++;
+        }
+      }
+      if (removeTrailing) {
+        while (end > start && _isParagraphSpace(words[end - 1].char)) {
+          end--;
+        }
+      }
+      if (start == 0 && end == words.length) {
+        result.add(sentence);
+        continue;
+      }
+      final List<BookWord> cleanWords = List.empty(growable: true);
+      for (int i = start; i < end; i++) {
+        cleanWords.add(BookWord(words[i].char, i - start));
+      }
+      result.add(
+        BookSentence(cleanWords, sentence.index, sentence.originalIndex),
+      );
+    }
+    return result;
+  }
+
+  bool _isParagraphSpace(String char) {
+    if (char.trim().isEmpty) {
+      return true;
+    }
+    return char == "\u200B" || // zero width space
+        char == "\u200C" || // zero width non-joiner
+        char == "\u200D" || // zero width joiner
+        char == "\u2060" || // word joiner
+        char == "\uFEFF"; // zero width no-break space / BOM
   }
 
   @override

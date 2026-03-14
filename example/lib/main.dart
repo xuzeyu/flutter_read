@@ -57,6 +57,9 @@ class _MyAppState extends State<MyApp> {
     enableVerticalDrag: true,
     enableTapPage: true,
     readStyle: ReadStyle(
+        indent: 2,
+        removeParagraphLeadingSpaces: true,
+        removeParagraphTrailingSpaces: true,
         titlePadding:
             const EdgeInsets.only(top: 100, bottom: 100, left: 0, right: 0),
         bgImage: const AssetImage("assets/images/bg.jpg")),
@@ -72,8 +75,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> start() async {
     DateTime now = DateTime.now();
     BookSource source = ByteDataSource(
-        await rootBundle.load("assets/books/Phineas Redux.txt"),
-        "Phineas Redux",
+        await rootBundle.load("assets/books/novel.txt"), "novel",
         isSplit: true);
 
     // bookController.setSummaryWidget(summaryPage);

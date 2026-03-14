@@ -110,10 +110,10 @@ Future<ui.Picture> drawTextOnCanvas(
       isFirstContentLine = true;
     }
     final words = line.sentence.words.sublist(line.startIndex, line.endIndex);
-    // 增加首行缩进
-    if (!line.isTitle && line.startIndex == 0) {
-      words.insert(0, BookWord("\u3000\u3000", -1));
-    }
+    final bool isParagraphFirstLine = !line.isTitle && line.startIndex == 0;
+    final double indentWidth = isParagraphFirstLine
+        ? controller.zhWordSize.width * max(0, readStyle.indent)
+        : 0;
     double wordWidth = 0.0;
     for (final word in words) {
       wordWidth += _wordWidth(word.char,
@@ -123,6 +123,7 @@ Future<ui.Picture> drawTextOnCanvas(
         readStyle.padding.left -
         readStyle.padding.right -
         wordWidth -
+        indentWidth -
         (line.isTitle
             ? readStyle.titlePadding.left + readStyle.titlePadding.right
             : 0);
@@ -144,6 +145,7 @@ Future<ui.Picture> drawTextOnCanvas(
         (!line.isTitle && readStyle.textAlign == TextAlign.center)) {
       x = (controller.contentSize.width -
               wordWidth -
+              indentWidth -
               wordSpacing * (words.length - 1)) /
           2;
     } else if ((line.isTitle && readStyle.titleTextAlign == TextAlign.end) ||
@@ -152,6 +154,7 @@ Future<ui.Picture> drawTextOnCanvas(
         (!line.isTitle && readStyle.textAlign == TextAlign.right)) {
       x = controller.contentSize.width -
           wordWidth -
+          indentWidth -
           wordSpacing * (words.length - 1) -
           readStyle.padding.right -
           (line.isTitle ? readStyle.titlePadding.right : 0);
@@ -159,6 +162,8 @@ Future<ui.Picture> drawTextOnCanvas(
 
     if (line.isTitle) {
       x += readStyle.titlePadding.left;
+    } else {
+      x += indentWidth;
     }
 
     for (final word in words) {
@@ -426,7 +431,12 @@ List<BookLine> _getLineContentAfter(ReadControllerImpl controller,
     lastLine?.endIndex = startIndex;
     lastLine = BookLine(sentence, startIndex);
     lines.add(lastLine);
-    List<int> strBreak = _breakText(controller, str, isTitle);
+    List<int> strBreak = _breakText(
+      controller,
+      str,
+      isTitle,
+      isParagraphFirstLine: !isTitle && startIndex == 0,
+    );
     // Not enough for one line
     // 不满一行
     if (strBreak[1] != 1) {
@@ -456,12 +466,22 @@ List<BookLine> _getLineContentBefore(ReadControllerImpl controller,
     lastLine?.endIndex = startIndex;
     lastLine = BookLine(sentence, startIndex);
     lines.add(lastLine);
-    List<int> strBreak = _breakText(controller, str, isTitle);
+    List<int> strBreak = _breakText(
+      controller,
+      str,
+      isTitle,
+      isParagraphFirstLine: !isTitle && startIndex == 0,
+    );
     // Not enough for one line
     // 不满一行
     if (strBreak[1] != 1) {
       List<BookWord> fixStr = sentence.words.sublist(startIndex);
-      List<int> fixStrBreak = _breakText(controller, fixStr, isTitle);
+      List<int> fixStrBreak = _breakText(
+        controller,
+        fixStr,
+        isTitle,
+        isParagraphFirstLine: !isTitle && startIndex == 0,
+      );
       if (fixStrBreak[1] != 1) {
         lastLine.endIndex = null;
       } else {
@@ -478,7 +498,11 @@ List<BookLine> _getLineContentBefore(ReadControllerImpl controller,
 }
 
 List<int> _breakText(
-    ReadControllerImpl controller, List<BookWord> text, bool isTitle) {
+  ReadControllerImpl controller,
+  List<BookWord> text,
+  bool isTitle, {
+  bool isParagraphFirstLine = false,
+}) {
   if (text.isEmpty) {
     return [0, 0];
   }
@@ -489,6 +513,14 @@ List<int> _breakText(
           ? controller.readStyle.titlePadding.left +
               controller.readStyle.titlePadding.right
           : 0);
+  if (isParagraphFirstLine) {
+    lineWidth -=
+        controller.zhWordSize.width * max(0, controller.readStyle.indent);
+    lineWidth = max(
+      lineWidth,
+      isTitle ? controller.zhTitleWordSize.width : controller.zhWordSize.width,
+    );
+  }
   List<int> strBreak = List.filled(2, 0);
   double width = 0;
   for (int i = 0; i < text.length; i++) {

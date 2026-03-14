@@ -106,6 +106,8 @@ class ReadStyle {
   final Color? bgColor;
   final ImageProvider? bgImage;
   final int indent; //首行缩进
+  final bool removeParagraphLeadingSpaces; //删除段落前空格
+  final bool removeParagraphTrailingSpaces; //删除段落后空格
   final double sentenceSpacing;
   final double lineSpacing;
   final double wordSpacing;
@@ -123,6 +125,8 @@ class ReadStyle {
     this.bgColor = const Color(0xFFF5F5DC),
     this.bgImage,
     this.indent = 2,
+    this.removeParagraphLeadingSpaces = false,
+    this.removeParagraphTrailingSpaces = false,
     this.sentenceSpacing = 16,
     this.lineSpacing = 8,
     this.wordSpacing = 2,
@@ -139,6 +143,8 @@ class ReadStyle {
     Color? bgColor,
     ImageProvider? bgImage,
     int? indent,
+    bool? removeParagraphLeadingSpaces,
+    bool? removeParagraphTrailingSpaces,
     double? sentenceSpacing,
     double? lineSpacing,
     double? wordSpacing,
@@ -158,6 +164,10 @@ class ReadStyle {
         bgColor: bgColor,
         bgImage: bgImage,
         indent: indent ?? this.indent,
+        removeParagraphLeadingSpaces:
+            removeParagraphLeadingSpaces ?? this.removeParagraphLeadingSpaces,
+        removeParagraphTrailingSpaces:
+            removeParagraphTrailingSpaces ?? this.removeParagraphTrailingSpaces,
         sentenceSpacing: sentenceSpacing ?? this.sentenceSpacing,
         lineSpacing: lineSpacing ?? this.lineSpacing,
         wordSpacing: wordSpacing ?? this.wordSpacing,
